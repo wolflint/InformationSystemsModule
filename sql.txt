@@ -1,0 +1,359 @@
+CREATE TABLE Equipment(
+	equipmentID	INTEGER NOT NULL,
+	title	VARCHAR(15) NOT NULL UNIQUE,
+	description	VARCHAR(50) NOT NULL,
+	quantityAvailable	INTEGER NOT NULL,
+	fk1_equipmentRequestID	INTEGER NOT NULL,
+	CONSTRAINT	pk_Equipment PRIMARY KEY (equipmentID)
+);
+
+CREATE TABLE Events(
+	eventID	INTEGER NOT NULL,
+	eventName	VARCHAR(20) NOT NULL,
+	eventDate	TIME(6) NOT NULL,
+	eventDescription	VARCHAR(60) NOT NULL,
+	-- Specify the PRIMARY KEY constraint for table "Events".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Events PRIMARY KEY (eventID)
+);
+
+-- Create a Database table to represent the "Staff" entity.
+CREATE TABLE Staff(
+	staffID	INTEGER NOT NULL,
+	firstName	VARCHAR(20) NOT NULL,
+	lastName	VARCHAR(20) NOT NULL,
+	email	VARCHAR(50) NOT NULL UNIQUE,
+	mobilePhone	VARCHAR(11) NOT NULL,
+	dob	DATE NOT NULL,
+	authorityLevel	INTEGER NOT NULL,
+	PFA	BOOLEAN NOT NULL,
+	fk1_homeDepartmentID	INTEGER NOT NULL,
+	fk2_homeFacultyID	INTEGER NOT NULL,
+	-- Specify the PRIMARY KEY constraint for table "Staff".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Staff PRIMARY KEY (staffID)
+);
+
+-- Create a Database table to represent the "PFA" entity.
+CREATE TABLE PFA(
+	pfaID	INTEGER NOT NULL,
+	firstName	VARCHAR(20) NOT NULL,
+	lastName	VARCHAR(20) NOT NULL,
+	email	VARCHAR(50) NOT NULL UNIQUE,
+	mobilePhone	VARCHAR(11) NOT NULL,
+	isStaff	BOOLEAN NOT NULL,
+	-- Specify the PRIMARY KEY constraint for table "PFA".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_PFA PRIMARY KEY (pfaID)
+);
+
+-- Create a Database table to represent the "Students" entity.
+CREATE TABLE Students(
+	studentID	INTEGER NOT NULL,
+	firstName	VARCHAR(20) NOT NULL,
+	lastName	VARCHAR(20) NOT NULL,
+	email	VARCHAR(50) NOT NULL UNIQUE,
+	dob	DATE NOT NULL,
+	emergencyPhone	VARCHAR(11) NOT NULL,
+	-- Specify the PRIMARY KEY constraint for table "Students".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Students PRIMARY KEY (studentID)
+);
+
+-- Create a Database table to represent the "Financial_Transactions" entity.
+CREATE TABLE Financial_Transactions(
+	transactionID	INTEGER NOT NULL,
+	value	INTEGER NOT NULL,
+	description	VARCHAR(30) NOT NULL,
+	transactionDate	DATE NOT NULL,
+	-- Specify the PRIMARY KEY constraint for table "Financial_Transactions".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Financial_Transactions PRIMARY KEY (transactionID)
+);
+
+-- Create a Database table to represent the "Schedule" entity.
+CREATE TABLE Schedule(
+	scheduleID	INTEGER NOT NULL,
+	dayDate	DATE NOT NULL,
+	periodStart	TIME(4) NOT NULL,
+	periodEnd	TIME(4) NOT NULL,
+	fk1_roomID	INTEGER NOT NULL,
+	-- Specify the PRIMARY KEY constraint for table "Schedule".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Schedule PRIMARY KEY (scheduleID)
+);
+
+-- Create a Database table to represent the "Equipment_Request" entity.
+CREATE TABLE Equipment_Request(
+	equipmentRequestID	INTEGER NOT NULL,
+	dateOfRequest	DATE NOT NULL,
+	quantityRequested	INTEGER NOT NULL,
+	bookingDecision	BOOLEAN,
+	fk1_staffID	INTEGER NOT NULL,
+	-- Specify the PRIMARY KEY constraint for table "Equipment_Request".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Equipment_Request PRIMARY KEY (equipmentRequestID)
+);
+
+-- Create a Database table to represent the "Faculty" entity.
+CREATE TABLE Faculty(
+	facultyID	INTEGER NOT NULL,
+	title	VARCHAR(12) NOT NULL UNIQUE,
+	description	VARCHAR(50) NOT NULL,
+	fk1_homeFacultyID	INTEGER NOT NULL,
+	-- Specify FK as unique to maintain 1:1 relationship
+	UNIQUE(fk1_homeFacultyID),
+	-- Specify the PRIMARY KEY constraint for table "Faculty".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Faculty PRIMARY KEY (facultyID)
+);
+
+-- Create a Database table to represent the "Room" entity.
+CREATE TABLE Room(
+	roomID	INTEGER NOT NULL,
+	roomName	INTEGER NOT NULL,
+	coordinates	INTEGER NOT NULL,
+	-- Specify the PRIMARY KEY constraint for table "Room".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Room PRIMARY KEY (roomID)
+);
+
+-- Create a Database table to represent the "Department" entity.
+CREATE TABLE Department(
+	departmentID	INTEGER NOT NULL,
+	title	VARCHAR(12) UNIQUE,
+	description	VARCHAR(50),
+	fk1_homeDepartmentID	INTEGER NOT NULL,
+	-- Specify FK as unique to maintain 1:1 relationship
+	UNIQUE(fk1_homeDepartmentID),
+	-- Specify the PRIMARY KEY constraint for table "Department".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Department PRIMARY KEY (departmentID)
+);
+
+-- Create a Database table to represent the "Home_Department" entity.
+CREATE TABLE Home_Department(
+	homeDepartmentID	INTEGER NOT NULL,
+	-- Specify the PRIMARY KEY constraint for table "Home_Department".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Home_Department PRIMARY KEY (homeDepartmentID)
+);
+
+-- Create a Database table to represent the "Home_Faculty" entity.
+CREATE TABLE Home_Faculty(
+	homeFacultyID	INTEGER NOT NULL,
+	-- Specify the PRIMARY KEY constraint for table "Home_Faculty".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Home_Faculty PRIMARY KEY (homeFacultyID)
+);
+
+-- Create a Database table to represent the "Room_Request" entity.
+CREATE TABLE Room_Request(
+	roomRequestID	INTEGER NOT NULL,
+	requestedDate	DATE NOT NULL,
+	requestedTime	INTEGER NOT NULL,
+	reasonForRequest	LONG VARCHAR NOT NULL,
+	fk1_roomID	INTEGER NOT NULL,
+	fk2_staffID	INTEGER NOT NULL,
+	-- Specify the PRIMARY KEY constraint for table "Room_Request".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Room_Request PRIMARY KEY (roomRequestID)
+);
+
+
+CREATE TABLE Staff_Department(
+	s_staffID	INTEGER NOT NULL,
+	d_departmentID	INTEGER NOT NULL,
+	PRIMARY KEY (s_staffID,d_departmentID),
+	FOREIGN KEY(s_staffID) REFERENCES Staff(staffID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	FOREIGN KEY(d_departmentID) REFERENCES Department(departmentID) ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+-- Create a link table to represent the "Staff_Faculty" relationship.
+-- The attributes of this table are taken from the primary keys of table "Staff" and
+-- table "Faculty", i.e. each end of the relationship. A link table was created
+-- because "Staff_Faculty" is a many to many relationship which required resolving.
+-- notice how the primary key is a combination of the keys from both related tables (Staff and Faculty).
+CREATE TABLE Staff_Faculty(
+	s_staffID	INTEGER NOT NULL,
+	d_facultyID	INTEGER NOT NULL,
+	PRIMARY KEY (s_staffID,d_facultyID),
+	FOREIGN KEY(s_staffID) REFERENCES Staff(staffID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	FOREIGN KEY(d_facultyID) REFERENCES Faculty(facultyID) ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+-- Create a link table to represent the "Schedule_Students" relationship.
+-- The attributes of this table are taken from the primary keys of table "Schedule" and
+-- table "Students", i.e. each end of the relationship. A link table was created
+-- because "Schedule_Students" is a many to many relationship which required resolving.
+-- notice how the primary key is a combination of the keys from both related tables (Schedule and Students).
+CREATE TABLE Schedule_Students(
+	s_scheduleID	INTEGER NOT NULL,
+	d_studentID	INTEGER NOT NULL,
+	PRIMARY KEY (s_scheduleID,d_studentID),
+	FOREIGN KEY(s_scheduleID) REFERENCES Schedule(scheduleID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	FOREIGN KEY(d_studentID) REFERENCES Students(studentID) ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+-- Create a link table to represent the "Schedule_Staff" relationship.
+-- The attributes of this table are taken from the primary keys of table "Schedule" and
+-- table "Staff", i.e. each end of the relationship. A link table was created
+-- because "Schedule_Staff" is a many to many relationship which required resolving.
+-- notice how the primary key is a combination of the keys from both related tables (Schedule and Staff).
+CREATE TABLE Schedule_Staff(
+	s_scheduleID	INTEGER NOT NULL,
+	d_staffID	INTEGER NOT NULL,
+	PRIMARY KEY (s_scheduleID,d_staffID),
+	FOREIGN KEY(s_scheduleID) REFERENCES Schedule(scheduleID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	FOREIGN KEY(d_staffID) REFERENCES Staff(staffID) ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+-- Create a link table to represent the "Students_PFA" relationship.
+-- The attributes of this table are taken from the primary keys of table "Students" and
+-- table "PFA", i.e. each end of the relationship. A link table was created
+-- because "Students_PFA" is a many to many relationship which required resolving.
+-- notice how the primary key is a combination of the keys from both related tables (Students and PFA).
+CREATE TABLE Students_PFA(
+	s_studentID	INTEGER NOT NULL,
+	d_pfaID	INTEGER NOT NULL,
+	PRIMARY KEY (s_studentID,d_pfaID),
+	FOREIGN KEY(s_studentID) REFERENCES Students(studentID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	FOREIGN KEY(d_pfaID) REFERENCES PFA(pfaID) ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+-- Create a link table to represent the "Staff_Financial_Transactions" relationship.
+-- The attributes of this table are taken from the primary keys of table "Staff" and
+-- table "Financial_Transactions", i.e. each end of the relationship. A link table was created
+-- because "Staff_Financial_Transactions" is a many to many relationship which required resolving.
+-- notice how the primary key is a combination of the keys from both related tables (Staff and Financial_Transactions).
+CREATE TABLE Staff_Financial_Transactions(
+	s_staffID	INTEGER NOT NULL,
+	d_transactionID	INTEGER NOT NULL,
+	PRIMARY KEY (s_staffID,d_transactionID),
+	FOREIGN KEY(s_staffID) REFERENCES Staff(staffID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	FOREIGN KEY(d_transactionID) REFERENCES Financial_Transactions(transactionID) ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+-- Create a link table to represent the "Staff_Events" relationship.
+-- The attributes of this table are taken from the primary keys of table "Staff" and
+-- table "Events", i.e. each end of the relationship. A link table was created
+-- because "Staff_Events" is a many to many relationship which required resolving.
+-- notice how the primary key is a combination of the keys from both related tables (Staff and Events).
+CREATE TABLE Staff_Events(
+	s_staffID	INTEGER NOT NULL,
+	d_eventID	INTEGER NOT NULL,
+	PRIMARY KEY (s_staffID,d_eventID),
+	FOREIGN KEY(s_staffID) REFERENCES Staff(staffID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	FOREIGN KEY(d_eventID) REFERENCES Events(eventID) ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+-- Create a link table to represent the "PFA_Financial_Transactions" relationship.
+-- The attributes of this table are taken from the primary keys of table "PFA" and
+-- table "Financial_Transactions", i.e. each end of the relationship. A link table was created
+-- because "PFA_Financial_Transactions" is a many to many relationship which required resolving.
+-- notice how the primary key is a combination of the keys from both related tables (PFA and Financial_Transactions).
+CREATE TABLE PFA_Financial_Transactions(
+	s_pfaID	INTEGER NOT NULL,
+	d_transactionID	INTEGER NOT NULL,
+	PRIMARY KEY (s_pfaID,d_transactionID),
+	FOREIGN KEY(s_pfaID) REFERENCES PFA(pfaID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	FOREIGN KEY(d_transactionID) REFERENCES Financial_Transactions(transactionID) ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+-- Create a link table to represent the "PFA_Events" relationship.
+-- The attributes of this table are taken from the primary keys of table "PFA" and
+-- table "Events", i.e. each end of the relationship. A link table was created
+-- because "PFA_Events" is a many to many relationship which required resolving.
+-- notice how the primary key is a combination of the keys from both related tables (PFA and Events).
+CREATE TABLE PFA_Events(
+	s_pfaID	INTEGER NOT NULL,
+	d_eventID	INTEGER NOT NULL,
+	PRIMARY KEY (s_pfaID,d_eventID),
+	FOREIGN KEY(s_pfaID) REFERENCES PFA(pfaID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	FOREIGN KEY(d_eventID) REFERENCES Events(eventID) ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+-- Create a link table to represent the "Equipment_Room" relationship.
+-- The attributes of this table are taken from the primary keys of table "Equipment" and
+-- table "Room", i.e. each end of the relationship. A link table was created
+-- because "Equipment_Room" is a many to many relationship which required resolving.
+-- notice how the primary key is a combination of the keys from both related tables (Equipment and Room).
+CREATE TABLE Equipment_Room(
+	s_equipmentID	INTEGER NOT NULL,
+	d_roomID	INTEGER NOT NULL,
+	PRIMARY KEY (s_equipmentID,d_roomID),
+	FOREIGN KEY(s_equipmentID) REFERENCES Equipment(equipmentID) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	FOREIGN KEY(d_roomID) REFERENCES Room(roomID) ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+
+
+
+-- Now all the tables have been created the ALTER TABLE command is used to define some additional
+-- constraints.  These typically constrain values of foreign keys to be associated in some way
+-- with the primary keys of related tables.  Foreign key constraints can actually be specified
+-- when each table is created, but doing so can lead to dependency problems within the script
+-- i.e. tables may be referenced before they have been created.  This method is therefore safer.
+
+-- Alter table to add new constraints required to implement the "Schedule_Room" relationship
+
+-- This constraint ensures that the foreign key of table "Schedule"
+-- correctly references the primary key of table "Room"
+
+ALTER TABLE Schedule ADD CONSTRAINT fk1_Schedule_to_Room FOREIGN KEY(fk1_roomID) REFERENCES Room(roomID) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+-- Alter table to add new constraints required to implement the "Staff_Home_Department" relationship
+
+-- This constraint ensures that the foreign key of table "Staff"
+-- correctly references the primary key of table "Home_Department"
+
+ALTER TABLE Staff ADD CONSTRAINT fk1_Staff_to_Home_Department FOREIGN KEY(fk1_homeDepartmentID) REFERENCES Home_Department(homeDepartmentID) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+-- Alter table to add new constraints required to implement the "Department_Home_Department" relationship
+
+-- This constraint ensures that the foreign key of table "Department"
+-- correctly references the primary key of table "Home_Department"
+
+ALTER TABLE Department ADD CONSTRAINT fk1_Department_to_Home_Department FOREIGN KEY(fk1_homeDepartmentID) REFERENCES Home_Department(homeDepartmentID) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+-- Alter table to add new constraints required to implement the "Faculty_Home_Faculty" relationship
+
+-- This constraint ensures that the foreign key of table "Faculty"
+-- correctly references the primary key of table "Home_Faculty"
+
+ALTER TABLE Faculty ADD CONSTRAINT fk1_Faculty_to_Home_Faculty FOREIGN KEY(fk1_homeFacultyID) REFERENCES Home_Faculty(homeFacultyID) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+-- Alter table to add new constraints required to implement the "Staff_Home_Faculty" relationship
+
+-- This constraint ensures that the foreign key of table "Staff"
+-- correctly references the primary key of table "Home_Faculty"
+
+ALTER TABLE Staff ADD CONSTRAINT fk2_Staff_to_Home_Faculty FOREIGN KEY(fk2_homeFacultyID) REFERENCES Home_Faculty(homeFacultyID) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+-- Alter table to add new constraints required to implement the "Equipment_Equipment_Request" relationship
+
+-- This constraint ensures that the foreign key of table "Equipment"
+-- correctly references the primary key of table "Equipment_Request"
+
+ALTER TABLE Equipment ADD CONSTRAINT fk1_Equipment_to_Equipment_Request FOREIGN KEY(fk1_equipmentRequestID) REFERENCES Equipment_Request(equipmentRequestID) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+-- Alter table to add new constraints required to implement the "Equipment_Request_Staff" relationship
+
+-- This constraint ensures that the foreign key of table "Equipment_Request"
+-- correctly references the primary key of table "Staff"
+
+ALTER TABLE Equipment_Request ADD CONSTRAINT fk1_Equipment_Request_to_Staff FOREIGN KEY(fk1_staffID) REFERENCES Staff(staffID) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+-- Alter table to add new constraints required to implement the "Room_Request_Room" relationship
+
+-- This constraint ensures that the foreign key of table "Room_Request"
+-- correctly references the primary key of table "Room"
+
+ALTER TABLE Room_Request ADD CONSTRAINT fk1_Room_Request_to_Room FOREIGN KEY(fk1_roomID) REFERENCES Room(roomID) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+-- Alter table to add new constraints required to implement the "Room_Request_Staff" relationship
+
+-- This constraint ensures that the foreign key of table "Room_Request"
+-- correctly references the primary key of table "Staff"
+
+ALTER TABLE Room_Request ADD CONSTRAINT fk2_Room_Request_to_Staff FOREIGN KEY(fk2_staffID) REFERENCES Staff(staffID) ON DELETE RESTRICT ON UPDATE RESTRICT;
